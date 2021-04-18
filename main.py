@@ -104,11 +104,20 @@ market_alldata = all_data[['Market','Customer Id','order date (DateOrders)','shi
 market_group = market_alldata.groupby('Market')['order date (DateOrders)'].agg([min,max])
 #print(market_group)
 
-africa_orders = all_data[all_data['Market'] == "Africa"]
+#africa_orders = all_data[all_data['Market'] == "Africa"]
 #print(africa_orders)
-africa_markets = africa_orders['Department Name'].value_counts()
-print(africa_markets)
+#africa_markets = africa_orders['Department Name'].value_counts()
+#print(africa_markets)
 
 markets = all_data.groupby('Market')
-for key, all_data in markets:
+#for name, group in markets:
+    #print(name)
+    #print(group)
+
+africa = markets.get_group('Africa')
+asia = markets.get_group('Pacific Asia')
+latam = markets.get_group('LATAM')
+europe = markets.get_group('Europe')
+usca = markets.get_group('USCA')
+
 
