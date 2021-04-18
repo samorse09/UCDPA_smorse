@@ -110,9 +110,6 @@ market_group = market_alldata.groupby('Market')['order date (DateOrders)'].agg([
 #print(africa_markets)
 
 markets = all_data.groupby('Market')
-#for name, group in markets:
-    #print(name)
-    #print(group)
 
 africa = markets.get_group('Africa')
 asia = markets.get_group('Pacific Asia')
@@ -120,4 +117,20 @@ latam = markets.get_group('LATAM')
 europe = markets.get_group('Europe')
 usca = markets.get_group('USCA')
 
+#print(africa['Department Name'].value_counts())
+#print(usca['Department Name'].value_counts())
+#print(africa.groupby('Department Name')['Order Item Total'].sum())
+#africa_sales = africa.groupby('Department Name')
+#africa_sales['Sales Total'] = africa.groupby('Department Name')['Order Item Total'].sum()
 
+
+fraud = all_data[all_data['Order Status'] == "SUSPECTED_FRAUD"]
+fraud_market = fraud['Market'].value_counts()
+print(fraud_market)
+print(total_bymarket)
+perc_fraud = fraud_market / total_bymarket
+print(perc_fraud)
+
+print(lates_market)
+print(percent_bymarket)
+print(markets['Department Name'].value_counts())
