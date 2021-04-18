@@ -33,6 +33,9 @@ print(cusords)
 #create subsets by late or on time
 dstatus_num = header_data['Late_delivery_risk'].value_counts()
 print(dstatus_num)
+#add column for number of days late
+header_data['days_late'] = header_data['Days for shipment (scheduled)'] - header_data['Days for shipping (real)']
+print(header_data.head(5))
 
 #add column for late status
 status =  []
@@ -44,8 +47,26 @@ for value in header_data['Late_delivery_risk']:
 header_data['Late_Status'] = status
 print(header_data.head())
 
-is_late = header_data[header_data['Late_Status'] == 'Late']
-on_time = header_data[header_data['Late_Status'] == 'On_Time']
+
+file2 = '/Users/smorse/Documents/GitHub/UCDPA_smorse/Data/SCMData2.csv'
+data2 = pd.read_csv(file2, header=0)
+
+#avgdays_late = is_late['days_late'].mean()
+#print(avgdays_late)
+
+df2 = pd.DataFrame(data2)
+order_data = df2.set_index('Unique ID').sort_index()
+order_data = order_data.drop(columns='Order Id')
+order_data = order_data.drop(columns='Order Item Id')
+order_data = order_data.drop(columns='Order Status')
+print(order_data.head(5))
+
+#merge the two data frames
+all_data = header_data.merge(order_data, on='Unique ID')
+print(all_data.head(5))
+
+is_late = all_data[all_data['Late_Status'] == 'Late']
+on_time = all_data[all_data['Late_Status'] == 'On_Time']
 
 print(np.shape(is_late))
 print(np.shape(on_time))
@@ -56,11 +77,26 @@ print(lates_region)
 ontime_region = on_time['Order Region'].value_counts()
 print(ontime_region)
 
-total_byregion = header_data['Order Region'].value_counts()
+total_byregion = all_data['Order Region'].value_counts()
 print(total_byregion)
 
 percent_byregion = lates_region / total_byregion
 print(percent_byregion)
 
+lates_customer = is_late['Customer Id'].value_counts()
+print(lates_customer)
 
+print(cusords)
+
+percent_bycus = lates_customer / cusords
+print(percent_bycus)
+
+lates_market = is_late['Market'].value_counts()
+print(lates_market)
+total_bymarket = all_data['Market'].value_counts()
+print(total_bymarket)
+percent_bymarket = lates_market / total_bymarket
+print(percent_bymarket)
+
+import matplotlib.pyplot as plt
 
