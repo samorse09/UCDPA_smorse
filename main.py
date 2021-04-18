@@ -47,7 +47,6 @@ for value in header_data['Late_delivery_risk']:
 header_data['Late_Status'] = status
 print(header_data.head())
 
-
 file2 = '/Users/smorse/Documents/GitHub/UCDPA_smorse/Data/SCMData2.csv'
 data2 = pd.read_csv(file2, header=0)
 
@@ -89,14 +88,27 @@ print(lates_customer)
 print(cusords)
 
 percent_bycus = lates_customer / cusords
-print(percent_bycus)
+#print(percent_bycus)
 
 lates_market = is_late['Market'].value_counts()
-print(lates_market)
 total_bymarket = all_data['Market'].value_counts()
-print(total_bymarket)
 percent_bymarket = lates_market / total_bymarket
-print(percent_bymarket)
+#print(percent_bymarket)
 
 import matplotlib.pyplot as plt
+
+market_alldata = all_data[['Market','Customer Id','order date (DateOrders)','shipping date (DateOrders)','Late_Status','Department Name']]
+#print(market_alldata.head(5))
+#market_alldata = all_data.set_index("Market")
+#min and max dates for each market
+market_group = market_alldata.groupby('Market')['order date (DateOrders)'].agg([min,max])
+#print(market_group)
+
+africa_orders = all_data[all_data['Market'] == "Africa"]
+#print(africa_orders)
+africa_markets = africa_orders['Department Name'].value_counts()
+print(africa_markets)
+
+markets = all_data.groupby('Market')
+for key, all_data in markets:
 
