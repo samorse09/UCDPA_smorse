@@ -133,5 +133,16 @@ print(pt1)
 #sns.catplot(x='Market',y='Order Profit Per Order',data=all_data,kind='bar',hue='Department Name',ci=none)
 #plt.show()
 
-sns.catplot(x='Department Name',y='Order Profit Per Order',data=all_data,kind='bar',ci=none)
+#sns.catplot(x='Department Name',y='Order Profit Per Order',data=all_data,kind='bar',ci=none)
+#plt.show()
+
+#mall_date = market_alldata.sort_values('YEAR OF ORDER')
+#plot_a = sns.catplot(x='Department Name',data=mall_date,kind='count',hue='YEAR OF ORDER',col='Market', col_wrap=3)
+#plt.xticks(rotation=45)
+#plt.tight_layout()
+#plt.show()
+
+plot_b = sns.catplot(x='Shipping Mode',data=all_data,kind='count',hue='Late_Status')
 plt.show()
+
+#percentage of orders late by region
