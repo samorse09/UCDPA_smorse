@@ -122,4 +122,16 @@ print(markets_dept)
 pt1 = all_data.pivot_table(values='Order Profit Per Order',index='Market',columns='YEAR OF ORDER',aggfunc=np.sum, fill_value=0)
 print(pt1)
 
-markets_dept.plot
+#sns.countplot(x='Department Name',data=all_data)
+#plt.show()
+
+#count of orders by department in each market
+#sns.countplot(x='Department Name',data=all_data,hue='Market')
+#plt.show()
+
+#average profit per order based on department in each market
+#sns.catplot(x='Market',y='Order Profit Per Order',data=all_data,kind='bar',hue='Department Name',ci=none)
+#plt.show()
+
+sns.catplot(x='Department Name',y='Order Profit Per Order',data=all_data,kind='bar',ci=none)
+plt.show()
