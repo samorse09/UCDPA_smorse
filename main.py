@@ -1,5 +1,7 @@
 import pandas as pd
 import numpy as np
+import matplotlib.pyplot as plt
+import seaborn as sns
 
 file1 = '/Users/smorse/Documents/GitHub/UCDPA_smorse/Data/SCMData1a.csv'
 data1 = pd.read_csv(file1, header=0)
@@ -95,19 +97,12 @@ total_bymarket = all_data['Market'].value_counts()
 percent_bymarket = lates_market / total_bymarket
 #print(percent_bymarket)
 
-import matplotlib.pyplot as plt
-
-market_alldata = all_data[['Market','Customer Id','order date (DateOrders)','shipping date (DateOrders)','Late_Status','Department Name']]
+market_alldata = all_data[['Market','Customer Id','YEAR OF ORDER','Late_Status','Department Name','Shipping Mode','Order Profit Per Order','Category Name']]
 #print(market_alldata.head(5))
 #market_alldata = all_data.set_index("Market")
 #min and max dates for each market
-market_group = market_alldata.groupby('Market')['order date (DateOrders)'].agg([min,max])
-#print(market_group)
-
-#africa_orders = all_data[all_data['Market'] == "Africa"]
-#print(africa_orders)
-#africa_markets = africa_orders['Department Name'].value_counts()
-#print(africa_markets)
+market_group = market_alldata.groupby('Market')['YEAR OF ORDER'].agg([min,max])
+print(market_group)
 
 markets = all_data.groupby('Market')
 
@@ -117,20 +112,14 @@ latam = markets.get_group('LATAM')
 europe = markets.get_group('Europe')
 usca = markets.get_group('USCA')
 
-#print(africa['Department Name'].value_counts())
-#print(usca['Department Name'].value_counts())
-#print(africa.groupby('Department Name')['Order Item Total'].sum())
-#africa_sales = africa.groupby('Department Name')
-#africa_sales['Sales Total'] = africa.groupby('Department Name')['Order Item Total'].sum()
-
-
-fraud = all_data[all_data['Order Status'] == "SUSPECTED_FRAUD"]
-fraud_market = fraud['Market'].value_counts()
-print(fraud_market)
-print(total_bymarket)
-perc_fraud = fraud_market / total_bymarket
-print(perc_fraud)
 
 print(lates_market)
 print(percent_bymarket)
-print(markets['Department Name'].value_counts())
+markets_dept = markets['Department Name'].value_counts()
+print(markets_dept)
+
+
+pt1 = all_data.pivot_table(values='Order Profit Per Order',index='Market',columns='YEAR OF ORDER',aggfunc=np.sum, fill_value=0)
+print(pt1)
+
+markets_dept.plot
