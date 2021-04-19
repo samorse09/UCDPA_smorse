@@ -14,12 +14,14 @@ print(missing_values_count[0:25])
 # print(data1.shape, droprows.shape)
 # convert to dataframe
 df1 = pd.DataFrame(data1)
-# remove unnecessary columns (zipcode)
+# remove unnecessary column (zipcode)
 df1 = df1.drop(['Customer Zipcode'], axis=1)
 print(df1.shape)
 print(df1.head(5))
+#set Unique ID as the Index
 header_data = df1.set_index('Unique ID').sort_index()
 print(header_data.head(2))
+#check the column names / keys for further reference
 hd_keys = header_data.keys()
 print(hd_keys)
 
@@ -36,7 +38,7 @@ print(cusords)
 dstatus_num = header_data['Late_delivery_risk'].value_counts()
 print(dstatus_num)
 #add column for number of days late
-header_data['days_late'] = header_data['Days for shipment (scheduled)'] - header_data['Days for shipping (real)']
+header_data['days_late'] = header_data['Days for shipping (real)'] - header_data['Days for shipment (scheduled)']
 print(header_data.head(5))
 
 #add column for late status
@@ -49,12 +51,10 @@ for value in header_data['Late_delivery_risk']:
 header_data['Late_Status'] = status
 print(header_data.head())
 
+#read the second data set
 file2 = '/Users/smorse/Documents/GitHub/UCDPA_smorse/Data/SCMData2.csv'
 data2 = pd.read_csv(file2, header=0)
-
-#avgdays_late = is_late['days_late'].mean()
-#print(avgdays_late)
-
+#create dataframe for second data set, dropping unnecessary columns
 df2 = pd.DataFrame(data2)
 order_data = df2.set_index('Unique ID').sort_index()
 order_data = order_data.drop(columns='Order Id')
@@ -66,6 +66,7 @@ print(order_data.head(5))
 all_data = header_data.merge(order_data, on='Unique ID')
 print(all_data.head(5))
 
+#break out orders by late and on time
 is_late = all_data[all_data['Late_Status'] == 'Late']
 on_time = all_data[all_data['Late_Status'] == 'On_Time']
 
@@ -74,6 +75,17 @@ print(np.shape(on_time))
 
 lates_region = is_late['Order Region'].value_counts()
 print(lates_region)
+
+orders_by_seg = all_data['Customer Segment'].value_counts
+
+palette1 = ['b','y','r']
+palette2 = ['c','m','b']
+
+#number of orders by customer segment
+orders_by_seg_plot = sns.countplot(x='Customer Segment', data=all_data,palette=palette1, saturation=.8)
+#late orders by customer segment
+late_by_seg_plot = sns.countplot(x='Customer Segment',data=is_late,saturation=0.99,palette=palette2)
+plt.show()
 
 ontime_region = on_time['Order Region'].value_counts()
 print(ontime_region)
@@ -146,3 +158,4 @@ plot_b = sns.catplot(x='Shipping Mode',data=all_data,kind='count',hue='Late_Stat
 plt.show()
 
 #percentage of orders late by region
+#bar1 = sns.catplot(x='Shipping Mode',data=)
