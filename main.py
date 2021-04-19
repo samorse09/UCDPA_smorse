@@ -1,7 +1,7 @@
 import pandas as pd
 import numpy as np
 
-file1 = '/Users/smorse/Documents/GitHub/UCDPA_smorse/Data/SCMData1.csv'
+file1 = '/Users/smorse/Documents/GitHub/UCDPA_smorse/Data/SCMData1a.csv'
 data1 = pd.read_csv(file1, header=0)
 print(data1.head(5))
 print(data1.shape)
