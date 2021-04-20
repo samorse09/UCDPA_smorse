@@ -138,11 +138,6 @@ sns.countplot(x='Department Name',data=fv_alldata)
 plt.xticks(rotation=45)
 plt.show()
 
-#count of orders by department in each market
-sns.countplot(x='Department Name',data=fv_alldata,hue='Market')
-plt.xticks(rotation=45)
-plt.show()
-
 #average profit per order based on department in each market
 sns.catplot(x='Department Name',y='Order Profit Per Order',data=fv_alldata,kind='bar', ci=None)
 plt.xticks(rotation=45)
