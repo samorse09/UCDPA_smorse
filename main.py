@@ -1,49 +1,56 @@
+#import of all required packages
+
 import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
 import seaborn as sns
+#want all plots to have same style, ticks so setting at top of code
+sns.set_theme(style='ticks')
 
+#upload of first csv file and check the shape
 file1 = '/Users/smorse/Documents/GitHub/UCDPA_smorse/Data/SCMData1a.csv'
 data1 = pd.read_csv(file1, header=0)
 print(data1.head(5))
 print(data1.shape)
+
 # count the number of missing values in each column
 missing_values_count = data1.isnull().sum()
 print(missing_values_count[0:25])
-# droprows = data1.dropna()
-# print(data1.shape, droprows.shape)
-# convert to dataframe
-df1 = pd.DataFrame(data1)
-# remove unnecessary column (zipcode)
-df1 = df1.drop(['Customer Zipcode'], axis=1)
+
+#drop any rows with a missing value and print updated shape to verify number of rows dropped
+droprows = data1.dropna()
+print(data1.shape, droprows.shape)
+
+# convert to dataframe and drop unnecessary column
+df1 = pd.DataFrame(droprows)
+df1 = droprows.drop(['Customer Zipcode'], axis=1)
+
+#check the updated shape and header to ensure success of drop
 print(df1.shape)
 print(df1.head(5))
-#set Unique ID as the Index
+
+#set Unique ID as the Index and print to verify sort was done, new variable header data
 header_data = df1.set_index('Unique ID').sort_index()
 print(header_data.head(2))
+
 #check the column names / keys for further reference
 hd_keys = header_data.keys()
 print(hd_keys)
-
-sns.set_theme(style='ticks')
 
 # Create subset to count number of individual customers
 hd_cusnum = header_data.drop_duplicates(subset='Customer Id')
 count_hd_cusnum = header_data.value_counts('Customer Id')
 print(count_hd_cusnum)
 
-#number of orders by customer
+#number of orders by customer to see if any specific customers worth looking into for insights
 cusords = header_data['Customer Id'].value_counts()
 print(cusords)
 
-#create subsets by late or on time
-dstatus_num = header_data['Late_delivery_risk'].value_counts()
-print(dstatus_num)
-#add column for number of days late
+#add column for number of days late & verify it was successfully added
 header_data['days_late'] = header_data['Days for shipping (real)'] - header_data['Days for shipment (scheduled)']
 print(header_data.head(5))
 
-#add column for late status
+#add column for late status value as this will be a major aspect of analysis & is a basis for major supply chain KPI
 status =  []
 for value in header_data['Late_delivery_risk']:
     if value == 1:
@@ -53,10 +60,10 @@ for value in header_data['Late_delivery_risk']:
 header_data['Late_Status'] = status
 print(header_data.head())
 
-#read the second data set
+#all of the cleaning/manipulating of the first dataframe is done and now ready to read in the second data set
 file2 = '/Users/smorse/Documents/GitHub/UCDPA_smorse/Data/SCMData2.csv'
 data2 = pd.read_csv(file2, header=0)
-#create dataframe for second data set, dropping unnecessary columns
+#create dataframe for second data set, dropping columns and setting the same index as the first df to merge on
 df2 = pd.DataFrame(data2)
 order_data = df2.set_index('Unique ID').sort_index()
 order_data = order_data.drop(columns='Order Id')
@@ -68,18 +75,20 @@ print(order_data.head(5))
 all_data = header_data.merge(order_data, on='Unique ID')
 print(all_data.head(5))
 
-#break out orders by late and on time
+#check for any duplicates now that the dataframes are merged -
+
+
+#create sub groups for to separate out orders by late and on time for further analysis, print the shape to see number
+#of orders in each
 is_late = all_data[all_data['Late_Status'] == 'Late']
 on_time = all_data[all_data['Late_Status'] == 'On_Time']
-
 print(np.shape(is_late))
 print(np.shape(on_time))
 
-lates_region = is_late['Order Region'].value_counts()
-print(lates_region)
-
+#check the number of orders by customer type/segment to see if any major variances in qty there worth looking into
 orders_by_seg = all_data['Customer Segment'].value_counts
 
+#set two unique pallet lists for my plot
 palette1 = ['b','y','r']
 palette2 = ['c','m','b']
 
@@ -87,25 +96,6 @@ palette2 = ['c','m','b']
 orders_by_seg_plot = sns.countplot(x='Customer Segment', data=all_data,palette=palette1, saturation=.8).set_title('# Orders Late Out of Total')
 late_by_seg_plot = sns.countplot(x='Customer Segment',data=is_late,saturation=0.99,palette=palette2)
 plt.show()
-
-
-
-ontime_region = on_time['Order Region'].value_counts()
-print(ontime_region)
-
-total_byregion = all_data['Order Region'].value_counts()
-print(total_byregion)
-
-percent_byregion = lates_region / total_byregion
-print(percent_byregion)
-
-lates_customer = is_late['Customer Id'].value_counts()
-print(lates_customer)
-
-print(cusords)
-
-percent_bycus = lates_customer / cusords
-#print(percent_bycus)
 
 lates_market = is_late['Market'].value_counts()
 total_bymarket = all_data['Market'].value_counts()
