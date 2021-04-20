@@ -25,6 +25,8 @@ print(header_data.head(2))
 hd_keys = header_data.keys()
 print(hd_keys)
 
+sns.set_theme(style='ticks')
+
 # Create subset to count number of individual customers
 hd_cusnum = header_data.drop_duplicates(subset='Customer Id')
 count_hd_cusnum = header_data.value_counts('Customer Id')
@@ -81,11 +83,12 @@ orders_by_seg = all_data['Customer Segment'].value_counts
 palette1 = ['b','y','r']
 palette2 = ['c','m','b']
 
-#number of orders by customer segment
-orders_by_seg_plot = sns.countplot(x='Customer Segment', data=all_data,palette=palette1, saturation=.8)
-#late orders by customer segment
+#number of late orders vs. total number of orders by customer segment
+orders_by_seg_plot = sns.countplot(x='Customer Segment', data=all_data,palette=palette1, saturation=.8).set_title('# Orders Late Out of Total')
 late_by_seg_plot = sns.countplot(x='Customer Segment',data=is_late,saturation=0.99,palette=palette2)
 plt.show()
+
+
 
 ontime_region = on_time['Order Region'].value_counts()
 print(ontime_region)
@@ -157,5 +160,5 @@ print(pt1)
 plot_b = sns.catplot(x='Shipping Mode',data=all_data,kind='count',hue='Late_Status')
 plt.show()
 
-#percentage of orders late by region
-#bar1 = sns.catplot(x='Shipping Mode',data=)
+plot_mode_region = sns.catplot(x='Market', kind='count',col='Shipping Mode', col_wrap=2, hue='Late_Status',data=all_data).set_xticklabels()
+plt.show()
